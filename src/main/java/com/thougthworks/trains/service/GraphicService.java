@@ -1,33 +1,18 @@
-package com.thougthworks.trains.modules;
+package com.thougthworks.trains.service;
 
-import com.thougthworks.trains.service.PathFilter;
+import com.thougthworks.trains.modules.GraphPoint;
+import com.thougthworks.trains.modules.RoutePath;
 
 import java.util.*;
 
 /**
  * Created by zhuxiaoxiang.zhu on 19-3-13.
  */
-public class Graphics {
-    private final Map<String, Set<GraphPoint>> graphMap = new HashMap<>();
+public class GraphicService {
+    private final Map<String, Set<GraphPoint>> graphMap;
 
-    /**
-     * 向图中添加节点
-     * @param from 起点  不能为空
-     * @param to 终点 可以为空  因为可能存在孤立节点
-     * @param weight 起点到终点的距离
-     * @return 添加成功true  否则false
-     */
-    public boolean addPoint(String from, String to, Integer weight) {
-        if (from == null) {
-            return false;
-        }
-        GraphPoint graphPoint = new GraphPoint(from, to, weight);
-        Set<GraphPoint> graphPoints = graphMap.get(from);
-        if (graphPoints == null) { // 之前没有添加过的起点
-            graphPoints = new HashSet<>();
-            graphMap.put(from, graphPoints);
-        }
-        return graphPoints.add(graphPoint);
+    public GraphicService(Map<String, Set<GraphPoint>> graphMap) {
+        this.graphMap = graphMap;
     }
 
     /**

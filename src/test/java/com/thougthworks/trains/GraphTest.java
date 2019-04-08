@@ -1,6 +1,6 @@
 package com.thougthworks.trains;
 
-import com.thougthworks.trains.modules.Graphics;
+import com.thougthworks.trains.service.GraphicService;
 import com.thougthworks.trains.modules.RoutePath;
 import com.thougthworks.trains.service.PathFilter;
 import com.thougthworks.trains.service.impl.*;
@@ -10,12 +10,14 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * 测试类
  * Created by zhuxiaoxiang.zhu on 19-3-15.
  */
 public class GraphTest {
-    private Graphics graphics;
+    private GraphicService graphics;
 
     @Before
     public void initGraphMap() {
@@ -116,6 +118,9 @@ public class GraphTest {
         assert allPaths.size() == 1;
         System.out.println("Output #9: " + allPaths.get(0).getTotalWeight());
         assert allPaths.get(0).getTotalWeight() == 9;
+
+        String graphStr = "AB5, BC4, AE7";
+        graphics = GraphBuilder.buildRoutePath(graphStr);
     }
 
     // 10. The number of different routes from C to C with a distance of less than 30.
@@ -126,6 +131,84 @@ public class GraphTest {
         List<RoutePath> allPaths = graphics.getAllPaths("C", "C", pathFilter);
         System.out.println("Output #10: " + allPaths.size());
         assert allPaths.size() == 7;
+    }
+
+    @Test
+    public void question_B1_Test() {
+        RoutePath containsPath = new RoutePath("A", "B", "C");
+        PathFilter pathFilter = new ContainsPathFilter(containsPath);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "C", pathFilter);
+        assertEquals(11, allPaths.get(0).getTotalDuration());
+    }
+
+    @Test
+    public void question_B2_Test() {
+        RoutePath containsPath = new RoutePath("A", "D");
+        PathFilter pathFilter = new ContainsPathFilter(containsPath);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "D", pathFilter);
+        assertEquals(5, allPaths.get(0).getTotalDuration());
+    }
+
+    @Test
+    public void question_B3_Test() {
+        RoutePath containsPath = new RoutePath("A", "D", "C");
+        PathFilter pathFilter = new ContainsPathFilter(containsPath);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "C", pathFilter);
+        assertEquals(15, allPaths.get(0).getTotalDuration());
+    }
+
+    @Test
+    public void question_B4_Test() {
+        RoutePath containsPath = new RoutePath("A", "E", "B", "C", "D");
+        PathFilter pathFilter = new ContainsPathFilter(containsPath);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "D", pathFilter);
+        assertEquals(28, allPaths.get(0).getTotalDuration());
+    }
+
+    @Test
+    public void question_B5_Test() {
+        RoutePath containsPath = new RoutePath("A", "E", "D");
+        PathFilter pathFilter = new ContainsPathFilter(containsPath);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "D", pathFilter);
+        assertEquals(0, allPaths.size());
+    }
+
+    @Test
+    public void question_B6_Test() {
+        PathFilter pathFilter = new MaxDurationPathFilter(30);
+        List<RoutePath> allPaths = graphics.getAllPaths("C", "C", pathFilter);
+        assertEquals(4, allPaths.size());
+    }
+
+    @Test
+    public void question_B7_Test() {
+        PathFilter pathFilter = new ExactlyDurationPathFilter(30);
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "C", pathFilter);
+        assertEquals(1, allPaths.size());
+    }
+
+    @Test
+    public void question_B8_Test() {
+        PathFilter pathFilter = new ShortestDurationPathFilter();
+        List<RoutePath> allPaths = graphics.getAllPaths("A", "C", pathFilter);
+        assertEquals(1, allPaths.size());
+        assertEquals(11, allPaths.get(0).getTotalDuration());
+    }
+
+    // 9. The length of the shortest route (in terms of distance to travel) from B to B.
+    @Test
+    public void question_B9_Test() {
+        PathFilter pathFilter = new ShortestDurationPathFilter();
+        List<RoutePath> allPaths = graphics.getAllPaths("B", "B", pathFilter);
+        assertEquals(1, allPaths.size());
+        assertEquals(13, allPaths.get(0).getTotalDuration());
+    }
+
+    @Test
+    public void question_B10_Test() {
+        PathFilter pathFilter = new MaxDurationPathFilter(35);
+        List<RoutePath> allPaths = graphics.getAllPaths("C", "C", pathFilter);
+        assertEquals(6, allPaths.size());
     }
 
     @Test
@@ -140,5 +223,7 @@ public class GraphTest {
         question8Test();
         question9Test();
         question10Test();
+
+        question_B1_Test();
     }
 }

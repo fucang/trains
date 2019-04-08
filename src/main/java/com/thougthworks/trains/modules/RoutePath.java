@@ -10,6 +10,9 @@ import java.util.List;
  * Created by zhuxiaoxiang.zhu on 19-3-14.
  */
 public class RoutePath {
+    private static final Integer traveTaked = 1;
+    private static final Integer stationStopTaked = 2;
+
     private List<GraphPoint> routePaths = new ArrayList<>();
     private int totalWeight;
 
@@ -43,6 +46,15 @@ public class RoutePath {
 
     public int getTotalWeight() {
         return totalWeight;
+    }
+
+    public int getTotalDuration() {
+        return getTotalWeight() * traveTaked + getPathPointStopNum() * stationStopTaked;
+    }
+
+    private int getPathPointStopNum() {
+        int stopNum = getPathStopNum() - 1;
+        return stopNum > 0 ? stopNum : 0;
     }
 
     public void setTotalWeight(int totalWeight) {
